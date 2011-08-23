@@ -1,5 +1,7 @@
 <?php
 namespace Onion {
+    //框架核心类，实现了错误处理，自动加载机制
+
     use Onion\DataMapper\Data;
     use Onion\HttpError;
     use Onion\MVC\Application;
@@ -9,19 +11,19 @@ namespace Onion {
     require __DIR__ .'/functions.php';
 
     class Config {
-        static protected $config = array();
+        protected static $config = array();
 
-        static public function import(array $config) {
+        public static function import(array $config) {
             self::$config = array_merge(self::$config, $config);
         }
 
-        static public function set() {
+        public static function set() {
             $path = func_get_args();
             $val = array_pop($path);
             return array_set(self::$config, $path, $val);
         }
 
-        static public function get($path) {
+        public static function get($path) {
             $path = is_array($path) ? $path : func_get_args();
             return $path ? array_get(self::$config, $path) : self::$config;
         }
@@ -76,30 +78,30 @@ namespace Onion {
             return $more;
         }
 
-        static public function invalid_argument($function, $class = null) {
+        public static function invalid_argument($function, $class = null) {
             if ($class) $function = "{$class}::{$function}";
             return new static("Invalid argument of {$function}");
         }
 
-        static public function call_undefined($function, $class = null) {
+        public static function call_undefined($function, $class = null) {
             if ($class) $function = "{$class}::{$function}";
             return new static("Call to undefined {$function}");
         }
 
-        static public function undefined_property($class, $property) {
+        public static function undefined_property($class, $property) {
             if (is_object($class)) $class = get_class($class);
             return new static("Undefined property {$property} of {$class}");
         }
 
-        static public function not_callable($function) {
+        public static function not_callable($function) {
             return new static("{$function} is not callable");
         }
 
-        static public function file_not_found($file) {
+        public static function file_not_found($file) {
             return new static("{$file} is not exist or readable");
         }
 
-        static public function require_extension($extension) {
+        public static function require_extension($extension) {
             return new static("Require {$extension} extension");
         }
     }
@@ -112,25 +114,25 @@ namespace Onion {
             return $header;
         }
 
-        static public function bad_request(array $more = array()) {
+        public static function bad_request(array $more = array()) {
             return new static('Bad Request', 400, null, $more);
         }
 
-        static public function unauthorized(array $more = array()) {
+        public static function unauthorized(array $more = array()) {
             return new static('Unauthorized', 401, null, $more);
         }
 
-        static public function forbidden(array $more = array()) {
+        public static function forbidden(array $more = array()) {
             return new static('Forbidden', 403, null, $more);
         }
 
-        static public function page_not_found(array $more = array()) {
+        public static function page_not_found(array $more = array()) {
             if (!isset($more['url']))
                 $more['url'] = req()->requestUri();
             return new static('Page Not Found', 404, null, $more);
         }
 
-        static public function method_not_allowed(array $more = array()) {
+        public static function method_not_allowed(array $more = array()) {
             if (!isset($more['method']))
                 $more['method'] = req()->method();
 
@@ -145,94 +147,94 @@ namespace Onion {
             return new static('Method Not Allowed', 405, null, $more);
         }
 
-        static public function not_acceptable(array $more = array()) {
+        public static function not_acceptable(array $more = array()) {
             return new static('Not Acceptable', 406, null, $more);
         }
 
-        static public function request_timeout(array $more = array()) {
+        public static function request_timeout(array $more = array()) {
             return new static('Request Time-out', 408, null, $more);
         }
 
-        static public function conflict(array $more = array()) {
+        public static function conflict(array $more = array()) {
             return new static('Conflict', 409, null, $more);
         }
 
-        static public function gone(array $more = array()) {
+        public static function gone(array $more = array()) {
             return new static('Gone', 410, null, $more);
         }
 
-        static public function precondition_failed(array $more = array()) {
+        public static function precondition_failed(array $more = array()) {
             return new static('Precondition Failed', 412, null, $more);
         }
 
-        static public function request_entity_too_large(array $more = array()) {
+        public static function request_entity_too_large(array $more = array()) {
             return new static('Request Entity Too Large', 413, null, $more);
         }
 
-        static public function unsupported_media_type(array $more = array()) {
+        public static function unsupported_media_type(array $more = array()) {
             return new static('Unsupported Media Type', 415, null, $more);
         }
 
-        static public function internal_server_error(array $more = array()) {
+        public static function internal_server_error(array $more = array()) {
             return new static('Internal Server Error', 500, null, $more);
         }
 
-        static public function not_implemented(array $more = array()) {
+        public static function not_implemented(array $more = array()) {
             if (!isset($more['method']))
                 $more['method'] = req()->method();
             return new static('Not Implemented', 501, null, $more);
         }
 
-        static public function bad_gateway(array $more = array()) {
+        public static function bad_gateway(array $more = array()) {
             return new static('Bad Gateway', 502, null, $more);
         }
 
-        static public function service_unavailable(array $more = array()) {
+        public static function service_unavailable(array $more = array()) {
             return new static('Service Unavailable', 503, null, $more);
         }
 
-        static public function gateway_timeout(array $more = array()) {
+        public static function gateway_timeout(array $more = array()) {
             return new static('Gateway Time-out', 504, null, $more);
         }
     }
 
     class StorageError extends Error {
-        static public function undefined_storage($storage_name) {
+        public static function undefined_storage($storage_name) {
             return new static('Undefined storage service:'. $storage_name);
         }
 
-        static public function connect_failed($storage_name) {
+        public static function connect_failed($storage_name) {
             return new static("Connect failed! Storage service: {$storage_name}");
         }
     }
 
     class OrmError extends StorageError {
-        static public function readonly($class) {
+        public static function readonly($class) {
             if ($class instanceof Data) $class = get_class($class);
             return new static("{$class} is readonly");
         }
 
-        static public function not_allow_null($class, $prop) {
+        public static function not_allow_null($class, $prop) {
             if ($class instanceof Data) $class = get_class($class);
             return new static("{$class}: Property {$prop} not allow null");
         }
 
-        static public function refuse_update($class, $prop) {
+        public static function refuse_update($class, $prop) {
             if ($class instanceof Data) $class = get_class($class);
             return new static("{$class}: Property {$prop} refuse update");
         }
 
-        static public function undefined_collection($class) {
+        public static function undefined_collection($class) {
             if ($class instanceof Data) $class = get_class($class);
             return new static("{$class}: Undefined collection");
         }
 
-        static public function undefined_primarykey($class) {
+        public static function undefined_primarykey($class) {
             if ($class instanceof Data) $class = get_class($class);
             return new static("{$class}: Undefined primary key");
         }
 
-        static public function insert_failed(Data $obj, $previous = null, array $more = array()) {
+        public static function insert_failed(Data $obj, $previous = null, array $more = array()) {
             $class = get_class($obj);
             $more['class'] = $class;
             $more['record'] = $obj->toArray();
@@ -241,7 +243,7 @@ namespace Onion {
             return new static("{$class} insert failed", 0, $previous, $more);
         }
 
-        static public function update_failed(Data $obj, $previous = null, array $more = array()) {
+        public static function update_failed(Data $obj, $previous = null, array $more = array()) {
             $class = get_class($obj);
             $more['class'] = $class;
             $more['record'] = $obj->toArray();
@@ -250,7 +252,7 @@ namespace Onion {
             return new static("{$class} update failed", 0, $previous, $more);
         }
 
-        static public function delete_failed(Data $obj, $previous = null, array $more = array()) {
+        public static function delete_failed(Data $obj, $previous = null, array $more = array()) {
             $class = get_class($obj);
             $more['class'] = $class;
             $more['primary_key'] = $obj->id();
@@ -322,8 +324,9 @@ namespace Onion {
 
         return array($code, $header);
     }
-    if (!defined('Onion_NO_EXCEPTION_HANDLER'))
+    if (!defined('Onion_NO_EXCEPTION_HANDLER')){
         set_exception_handler('\Onion\__on_exception');
+    }
 
     function __on_error($code, $message, $file = null, $line = null) {
         if (error_reporting() && $code)
