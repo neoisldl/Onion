@@ -1,0 +1,26 @@
+
+一个php框架
+
+采用php5.3开发，使用了php5.3的一些新特性，命名空间，静态延迟绑定和闭包
+
+当然运行也需要在php5.3
+
+这个框架的运行风格采用了rest风格，可以google一下
+
+REST是什么
+
+REST是英文Representational State Transfer的缩写，中文翻译为“表述性状态转移”，
+
+他是由Roy Thomas Fielding博士在他的论文《Architectural Styles and the Design of Network-based Software Architectures》中提出的一个术语。
+
+REST本身只是为分布式超媒体系统设计的一种架构风格，而不是标准。
+
+基于Web的架构，实际上就是各种规范的集合，这些规范共同组成了Web架构。比如Http协议，比如客户端服务器模式，这些都是规范。
+
+每当我们在原有规范的基础上增加新的规范，就会形成新的架构。而REST正是这样一种架构，他结合了一系列的规范，而形成了一种新的基于Web的架构风格。
+
+web服务器采用了nginx，以fast-cgi方式运行，采用fastcgi_param SCRIPT_FILENAME这个特性将Request请求导入到全局index.php这个mvc入口
+
+本框架还是作为一种学术性研究，在实际应用中对团队要求比较严格
+
+当然我会实现一个更加轻量级的小型框架，兼容性更好，以适应更广泛的开发环境
